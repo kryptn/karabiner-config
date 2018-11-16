@@ -31,13 +31,20 @@ def add_hyper(from_key_code, to_key_code,
     return {'from': from_, 'to': [to], 'type': type_}
 
 
-ijkl = ('i', 'j', 'k', 'l')
-arrow_key_codes = ['up_arrow', 'left_arrow', 'down_arrow', 'right_arrow']
-arrow_keys = zip(ijkl, arrow_key_codes)
-
-keys = ('h', 'n', 'u', 'o')
-other_things = ('home', 'end', 'page_up', 'page_down')
-other_keys = zip(keys, other_things)
+pok3r_map = [
+    ('i', 'up_arrow'),
+    ('j', 'left_arrow'),
+    ('k', 'down_arrow'),
+    ('l', 'right_arrow'),
+    ('h', 'home'),
+    ('n', 'end'),
+    ('u', 'page_up'),
+    ('o', 'page_down'),
+    *[(f"{n}", f"f{n}") for n in range(1, 10)],
+    ('0', 'f10'),
+    ('hyphen', 'f11'),
+    ('equals', 'f12'),
+]
 
 CAPS = 'caps_lock'
 SHIFT = 'left_shift'
@@ -65,18 +72,15 @@ passthrough_modfiers = [
 delete = add_hyper(BACKSPACE, DELETE, to_modifiers=[FN])
 grave = add_hyper(GRAVE, GRAVE)
 
-ijkl_keys_and_modifiers = [(f, t, ms) for f, t in arrow_keys for ms in passthrough_modfiers]
-ijkls = [add_hyper(fkey, tkey, passthrough_modifiers=mods) for fkey, tkey, mods in ijkl_keys_and_modifiers]
-
-other_keys_and_modifiers = [(f, t, ms) for f, t in other_keys for ms in passthrough_modfiers]
-others = [add_hyper(fkey, tkey, passthrough_modifiers=mods) for fkey, tkey, mods in other_keys_and_modifiers]
+keys_with_modifiers = [(f, t, ms) for f, t in pok3r_map for ms in passthrough_modfiers]
+mappings = [add_hyper(fkey, tkey, passthrough_modifiers=mods) for fkey, tkey, mods in keys_with_modifiers]
 
 
 def write_to_file():
     with open('boilerplate.json') as fd:
         boilerplate = json.load(fd)
 
-    boilerplate['profiles'][0]['complex_modifications']['rules'][0]['manipulators'] = [delete, grave, *ijkls, *others]
+    boilerplate['profiles'][0]['complex_modifications']['rules'][0]['manipulators'] = [delete, grave, *mappings]
 
     with open('output_karabiner.json', 'w') as fd:
         json.dump(boilerplate, fd, indent=2)
