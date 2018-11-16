@@ -1,7 +1,7 @@
 import json
 
 hyper = [
-    "right_shift"
+    "right_shift",
     "right_command",
     "right_control",
     "right_option",
@@ -28,7 +28,7 @@ def add_hyper(from_key_code, to_key_code,
     if passthrough_modifiers or to_modifiers:
         to["modifiers"] = passthrough_modifiers + to_modifiers
 
-    return {'from': from_, 'to': to, 'type': type_}
+    return {'from': from_, 'to': [to], 'type': type_}
 
 
 ijkl = ('i', 'j', 'k', 'l')
@@ -53,9 +53,13 @@ GRAVE = 'grave_accent_and_tilde'
 
 passthrough_modfiers = [
     [],
+    [CTRL],
     [SHIFT],
     [OPTION],
+    [CTRL, SHIFT],
     [SHIFT, OPTION],
+    [CTRL, OPTION],
+    [CTRL, SHIFT, OPTION],
 ]
 
 delete = add_hyper(BACKSPACE, DELETE, to_modifiers=[FN])
